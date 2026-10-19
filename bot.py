@@ -3,6 +3,26 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+import os
+
+# --- MINI SERVIDOR WEB PARA MANTENER FELIZ A RENDER ---
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(b"¡El bot de San Andreas Dealership esta activo 24/7!")
+
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), SimpleHandler)
+    server.serve_forever()
+
+# Arranca el servidor web en segundo plano
+threading.Thread(target=run_server, daemon=True).start()
+
 intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
