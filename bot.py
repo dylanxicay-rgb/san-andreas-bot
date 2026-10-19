@@ -23,8 +23,12 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"¡Conectado con éxito como {bot.user}!")
     try:
-        synced = await bot.tree.sync()
-        print(f"Se sincronizaron {len(synced)} comandos correctamente.")
+        # Pega aquí el ID numérico de tu servidor de Discord
+        id_servidor = discord.Object(id=1556033203125354527) 
+        
+        bot.tree.copy_global_to(guild=id_servidor)
+        synced = await bot.tree.sync(guild=id_servidor)
+        print(f"Se sincronizaron {len(synced)} comandos en el servidor.")
     except Exception as e:
         print(e)
 
