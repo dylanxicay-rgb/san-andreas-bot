@@ -1,5 +1,4 @@
 import os
-```[cite: 9]
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -137,5 +136,4 @@ async def vehiculo(
     )
 
 
-token = os.getenv("DISCORD_TOKEN")
-bot.run(token)
+bot.run(os.getenv("DISCORD_TOKEN"))
