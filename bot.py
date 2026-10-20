@@ -1,5 +1,7 @@
 import os
 import threading
+import time
+import urllib.request
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -12,6 +14,18 @@ app = Flask(__name__)
 def home():
     return "¡El bot de San Andreas Dealership esta activo 24/7!"
 
+# --- FUNCIÓN DE AUTOPING (MANTIENE RENDER DESPIERTO 24/7) ---
+def keep_alive_ping():
+    # URL de tu Web Service en Render
+    url = "https://san-andreas-bot.onrender.com"
+    while True:
+        time.sleep(600)  # Envía una petición cada 10 minutos (600 segundos)
+        try:
+            urllib.request.urlopen(url)
+            print("Ping enviado a Render para mantener la instancia activa.")
+        except Exception as e:
+            print(f"Error en ping de mantenimiento: {e}")
+
 # --- CONFIGURACIÓN DEL BOT DE DISCORD ---
 intents = discord.Intents.default()
 intents.message_content = True
@@ -23,7 +37,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"Conectado con exito como {bot.user}")
     try:
-        # Sincronización global para evitar errores de ID
+        # Sincronización global limpia
         synced = await bot.tree.sync()
         print(f"Comandos globales sincronizados: {len(synced)}")
     except Exception as e:
@@ -100,5 +114,9 @@ async def auto(
 
 # --- EJECUCIÓN PRINCIPAL ---
 if __name__ == "__main__":
+    # Inicia el hilo de autoping para evitar que Render se duerma
+    threading.Thread(target=keep_alive_ping, daemon=True).start()
+    # Inicia el bot de Discord en segundo plano
     threading.Thread(target=lambda: bot.run(os.getenv("DISCORD_TOKEN")), daemon=True).start()
+    # Servidor Flask para mantener vivo el puerto en Render
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
