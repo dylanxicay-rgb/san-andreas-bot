@@ -23,14 +23,17 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"¡Conectado con éxito como {bot.user}!")
     try:
-        # Pega aquí el ID de tu servidor de Discord
-        id_servidor = discord.Object(id=1556110821468282890) # O tu ID de servidor principal
+        id_servidor = discord.Object(id=1556110821468282890)
         
-        # Limpia comandos antiguos del servidor y sincroniza el actual
+        # 1. Borra cualquier comando global viejo de la caché de Discord
+        bot.tree.clear_commands(guild=None)
+        await bot.tree.sync()
+        
+        # 2. Limpia y sincroniza exclusivamente en tu servidor de S.A. Dealership
         bot.tree.clear_commands(guild=id_servidor)
-        await bot.tree.sync(guild=id_servidor)
+        synced = await bot.tree.sync(guild=id_servidor)
         
-        print("Comandos sincronizados y limpiados correctamente en el servidor.")
+        print(f"¡Comandos limpios! Se sincronizaron {len(synced)} comandos en el servidor.")
     except Exception as e:
         print(f"Error al sincronizar: {e}")
 
