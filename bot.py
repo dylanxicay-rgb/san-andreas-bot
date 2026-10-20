@@ -38,7 +38,7 @@ async def on_ready():
         print(f"Error al sincronizar: {e}")
 
 @bot.tree.command(
-    name="vehiculo",
+    name="auto",  # <--- Cambiamos de "vehiculo" a "auto" (o "publicar-auto")
     description="Publica una ficha detallada de auto en el foro de S.A. Dealership",
 )
 @app_commands.describe(
@@ -55,7 +55,7 @@ async def on_ready():
     extras="Extras instalados (Ej: Turbo, Llantas custom, Blindaje)",
     imagen="Sube, arrastra o pega tu foto aquí",
 )
-async def vehiculo(
+async def auto(  # <--- Cambia el nombre de la función también si gustas
     interaction: discord.Interaction,
     vehiculo: str,
     millas: str,
@@ -69,6 +69,8 @@ async def vehiculo(
     transmision: str,
     extras: str,
     imagen: discord.Attachment,
+):
+    # (El resto del código de tu función se queda exactamente igual abajo...)
 ):
     await interaction.response.defer(ephemeral=True)
     ID_CANAL_CATALOGO = 1556110821468282890
